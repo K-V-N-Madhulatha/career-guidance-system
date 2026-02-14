@@ -1,249 +1,190 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Career Roadmap System</title>
+    <title>Career Guidance System</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #eef2f7;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #4e73df, #1cc88a);
+        }
+
+        nav {
+            background: #2c3e50;
+            color: white;
+            padding: 18px;
             text-align: center;
-            margin-top: 40px;
+            font-size: 22px;
+            font-weight: 600;
         }
-        .box {
+
+        .container {
+            width: 85%;
+            max-width: 700px;
+            margin: 40px auto;
             background: white;
-            width: 700px;
-            margin: auto;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px gray;
+            border-radius: 12px;
+            box-shadow: 0px 5px 20px rgba(0,0,0,0.2);
         }
+
+        h1 {
+            text-align: center;
+        }
+
+        label {
+            font-weight: 500;
+        }
+
         select, input, button {
-            width: 80%;
-            padding: 10px;
-            margin: 10px;
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
             font-size: 15px;
         }
+
         button {
-            background-color: #007BFF;
+            background: #4e73df;
             color: white;
             border: none;
+            font-weight: 600;
             cursor: pointer;
         }
+
         button:hover {
-            background-color: #0056b3;
+            background: #2e59d9;
         }
-        #detailsSection, #wishPage {
+
+        .hidden {
             display: none;
-            text-align: left;
         }
-        .centerText {
+
+        .result {
+            background: #f8f9fc;
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+
+        .wish-box {
             text-align: center;
+            font-size: 18px;
+            line-height: 1.7;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            color: white;
+            font-size: 14px;
         }
     </style>
 </head>
+
 <body>
 
-<div class="box">
+<nav>
+    <i class="fa-solid fa-graduation-cap"></i> Career Guidance System
+</nav>
 
-    <h2>Career Roadmap After 10th</h2>
+<!-- PAGE 1 -->
+<div class="container" id="page1">
+    <h1>Find Your Career Path</h1>
 
-    <!-- PAGE 1 -->
-    <div id="goalSection">
-        <input type="text" id="studentName" placeholder="Enter Your Name">
+    <label>Enter Your Name:</label>
+    <input type="text" id="name" placeholder="Enter your name">
 
-        <select id="goal">
-            <option value="">Choose Career Goal</option>
-            <option value="medical">Medical Field</option>
-            <option value="engineering">Engineering</option>
-            <option value="commerce">Commerce & Finance</option>
-            <option value="government">Government Jobs</option>
-            <option value="law">Law & Administration</option>
-            <option value="creative">Creative & Media</option>
-            <option value="skill">Skill Based Careers</option>
-            <option value="business">Business / Entrepreneurship</option>
-        </select>
+    <label>Select Your Goal:</label>
+    <select id="goal">
+        <option value="">-- Select Goal --</option>
+        <option value="doctor">Doctor</option>
+        <option value="engineer">Engineer</option>
+        <option value="law">Law & Administration</option>
+        <option value="banking">Banking & Commerce</option>
+        <option value="government">Government Jobs</option>
+        <option value="teacher">Teacher / Lecturer</option>
+        <option value="defence">Defence Services</option>
+        <option value="software">Software Developer</option>
+        <option value="data">Data Scientist</option>
+        <option value="designer">Graphic Designer</option>
+        <option value="journalist">Journalist</option>
+        <option value="entrepreneur">Entrepreneur</option>
+        <option value="pharmacist">Pharmacist</option>
+        <option value="nurse">Nurse</option>
+        <option value="chartered">Chartered Accountant</option>
+    </select>
 
-        <button onclick="showDetails()">Show Career Roadmap</button>
-    </div>
-
-    <!-- PAGE 2 -->
-    <div id="detailsSection">
-        <div id="careerContent"></div>
-        <div class="centerText">
-            <button onclick="goToWishPage()">Continue</button>
-        </div>
-    </div>
-
-    <!-- PAGE 3 -->
-    <div id="wishPage" class="centerText">
-        <h2>🎉 Congratulations!</h2>
-        <p id="finalWish" style="font-size:18px; margin-top:20px;"></p>
-        <button onclick="restart()">Go Back to Start</button>
-    </div>
-
+    <button onclick="goToNextPage()">
+        <i class="fa-solid fa-lightbulb"></i> Get Career Details
+    </button>
 </div>
 
+<!-- PAGE 2 -->
+<div class="container hidden" id="page2">
+    <h1>Career Details</h1>
+    <div class="result" id="output"></div>
+
+    <div class="wish-box" id="wishMessage"></div>
+
+    <button onclick="goBack()">⬅ Back</button>
+</div>
+
+<footer>
+    © 2026 Career Guidance System | Designed Professionally
+</footer>
+
 <script>
+function goToNextPage() {
 
-function showDetails() {
-
+    var name = document.getElementById("name").value;
     var goal = document.getElementById("goal").value;
-    var name = document.getElementById("studentName").value;
 
-    if (name === "") {
-        alert("Please enter your name.");
+    if(name === "" || goal === "") {
+        alert("Please enter your name and select a goal.");
         return;
     }
 
-    if (goal === "") {
-        alert("Please select a career goal.");
-        return;
-    }
+    var careers = {
+        doctor: "Group: BiPC<br>Courses: MBBS, BDS<br>Steps:<br>1. Choose BiPC<br>2. Prepare for NEET<br>3. Join Medical College",
+        engineer: "Group: MPC<br>Courses: B.Tech, B.E<br>Steps:<br>1. Choose MPC<br>2. Prepare for JEE/EAMCET<br>3. Join Engineering College",
+        law: "Group: CEC/HEC<br>Courses: LLB, BA LLB<br>Steps:<br>1. Choose CEC<br>2. Prepare for CLAT<br>3. Join Law College",
+        banking: "Group: MEC/CEC<br>Courses: B.Com, CA<br>Steps:<br>1. Complete B.Com<br>2. Prepare for Bank Exams",
+        government: "Group: HEC<br>Courses: BA<br>Steps:<br>1. Complete Degree<br>2. Prepare for UPSC/Group Exams",
+        teacher: "Group: Any Stream<br>Courses: B.Ed<br>Steps:<br>1. Complete Degree<br>2. Do B.Ed<br>3. Apply Teaching Exams",
+        defence: "Group: MPC/Any<br>Courses: NDA, CDS<br>Steps:<br>1. Prepare NDA/CDS<br>2. Physical Training<br>3. Join Defence Academy",
+        software: "Group: MPC<br>Courses: B.Tech CSE, BCA<br>Steps:<br>1. Learn Programming<br>2. Build Projects<br>3. Apply IT Jobs",
+        data: "Group: MPC<br>Courses: Data Science<br>Steps:<br>1. Learn Python<br>2. Study Statistics<br>3. Build Projects",
+        designer: "Group: Any<br>Courses: B.Des, Animation<br>Steps:<br>1. Learn Design Tools<br>2. Build Portfolio",
+        journalist: "Group: Any<br>Courses: BA Journalism<br>Steps:<br>1. Improve Communication<br>2. Join Internship",
+        entrepreneur: "Group: Any<br>Courses: BBA, MBA<br>Steps:<br>1. Learn Business Skills<br>2. Start Your Startup",
+        pharmacist: "Group: BiPC<br>Courses: B.Pharmacy<br>Steps:<br>1. Choose BiPC<br>2. Join Pharmacy College",
+        nurse: "Group: BiPC<br>Courses: B.Sc Nursing<br>Steps:<br>1. Choose BiPC<br>2. Join Nursing College",
+        chartered: "Group: MEC<br>Courses: CA<br>Steps:<br>1. Register CA Foundation<br>2. Clear Exams<br>3. Complete Articleship"
+    };
 
-    var content = "";
+    document.getElementById("output").innerHTML = careers[goal];
 
-    if (goal === "medical") {
-        content = `
-        <h3>Medical Field</h3>
-        <b>Popular Jobs:</b>
-        <ul><li>Doctor</li><li>Nurse</li><li>Pharmacist</li></ul>
-        <b>Intermediate Group:</b> BiPC
-        <br><br>
-        <b>Courses Required:</b>
-        <ul><li>MBBS</li><li>BDS</li><li>B.Pharmacy</li></ul>
-        <b>Step-by-Step Process:</b>
-        <ol>
-            <li>Choose BiPC after 10th</li>
-            <li>Prepare for NEET</li>
-            <li>Complete Medical Degree</li>
-        </ol>`;
-    }
+    document.getElementById("wishMessage").innerHTML =
+        "<br><br>🎉 <b>Best wishes " + name + "!</b><br>" +
+        "Stay focused, work hard, and never give up.<br>" +
+        "You can definitely achieve your dream career! 🚀";
 
-    else if (goal === "engineering") {
-        content = `
-        <h3>Engineering</h3>
-        <b>Popular Jobs:</b>
-        <ul><li>Software Engineer</li><li>Civil Engineer</li></ul>
-        <b>Intermediate Group:</b> MPC
-        <br><br>
-        <b>Courses Required:</b>
-        <ul><li>B.Tech</li><li>B.E</li></ul>
-        <b>Step-by-Step Process:</b>
-        <ol>
-            <li>Choose MPC after 10th</li>
-            <li>Prepare for JEE/EAMCET</li>
-            <li>Complete Engineering Degree</li>
-        </ol>`;
-    }
-
-    else if (goal === "commerce") {
-        content = `
-        <h3>Commerce & Finance</h3>
-        <b>Popular Jobs:</b>
-        <ul><li>Chartered Accountant</li><li>Banker</li></ul>
-        <b>Intermediate Group:</b> MEC / CEC
-        <br><br>
-        <b>Courses Required:</b>
-        <ul><li>B.Com</li><li>CA</li></ul>
-        <b>Step-by-Step Process:</b>
-        <ol>
-            <li>Choose MEC or CEC</li>
-            <li>Join B.Com / CA Foundation</li>
-            <li>Complete Professional Certification</li>
-        </ol>`;
-    }
-
-    else if (goal === "government") {
-        content = `
-        <h3>Government Jobs</h3>
-        <b>Popular Jobs:</b>
-        <ul><li>IAS</li><li>Police Officer</li></ul>
-        <b>Intermediate Group:</b> HEC / MEC / MPC
-        <br><br>
-        <b>Step-by-Step Process:</b>
-        <ol>
-            <li>Choose suitable group</li>
-            <li>Complete Graduation</li>
-            <li>Prepare for UPSC / SSC Exams</li>
-        </ol>`;
-    }
-
-    else if (goal === "law") {
-        content = `
-        <h3>Law & Administration</h3>
-        <b>Popular Jobs:</b>
-        <ul><li>Lawyer</li><li>Judge</li></ul>
-        <b>Intermediate Group:</b> CEC / HEC
-        <br><br>
-        <b>Courses Required:</b>
-        <ul><li>BA LLB</li><li>LLB</li><li>CLAT</li></ul>
-        <b>Step-by-Step Process:</b>
-        <ol>
-            <li>Choose CEC / HEC</li>
-            <li>Write CLAT Exam</li>
-            <li>Complete Law Degree</li>
-        </ol>`;
-    }
-
-    else if (goal === "creative") {
-        content = `
-        <h3>Creative & Media</h3>
-        <b>Popular Jobs:</b>
-        <ul><li>Graphic Designer</li><li>Journalist</li></ul>
-        <b>Intermediate Group:</b> Any Group
-        <br><br>
-        <b>Courses Required:</b>
-        <ul><li>Mass Communication</li><li>Design Courses</li></ul>`;
-    }
-
-    else if (goal === "skill") {
-        content = `
-        <h3>Skill Based Careers</h3>
-        <b>Popular Jobs:</b>
-        <ul><li>Electrician</li><li>Chef</li></ul>
-        <b>Intermediate Group:</b> Vocational
-        <br><br>
-        <b>Courses Required:</b>
-        <ul><li>ITI</li><li>Diploma</li></ul>`;
-    }
-
-    else if (goal === "business") {
-        content = `
-        <h3>Business / Entrepreneurship</h3>
-        <b>Popular Jobs:</b>
-        <ul><li>Entrepreneur</li></ul>
-        <b>Intermediate Group:</b> MEC / Any
-        <br><br>
-        <b>Courses Required:</b>
-        <ul><li>BBA</li><li>MBA</li></ul>`;
-    }
-
-    alert("Success! Your personalized career roadmap is ready 🎉");
-
-    document.getElementById("goalSection").style.display = "none";
-    document.getElementById("detailsSection").style.display = "block";
-    document.getElementById("careerContent").innerHTML = content;
+    document.getElementById("page1").classList.add("hidden");
+    document.getElementById("page2").classList.remove("hidden");
 }
 
-function goToWishPage() {
-
-    var name = document.getElementById("studentName").value;
-
-    document.getElementById("detailsSection").style.display = "none";
-    document.getElementById("wishPage").style.display = "block";
-
-    document.getElementById("finalWish").innerHTML =
-        "Dear " + name + ", 🌟<br><br>" +
-        "You have taken the first step towards your dream career! 💪<br><br>" +
-        "Keep studying, stay consistent, and believe in yourself.<br><br>" +
-        "Success takes time, but with hard work you will definitely reach your goal! 🚀<br><br>" +
-        "All the very best for your bright future! ✨";
+function goBack() {
+    document.getElementById("page2").classList.add("hidden");
+    document.getElementById("page1").classList.remove("hidden");
 }
-
-function restart() {
-    location.reload();
-}
-
 </script>
 
 </body>
