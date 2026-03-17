@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Career Guidance System</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -8,11 +10,10 @@
 
     <style>
         body {
-            margin: 0;
             font-family: 'Poppins', sans-serif;
+            margin: 0;
             background: linear-gradient(to right, #4e73df, #1cc88a);
         }
-
         nav {
             background: #2c3e50;
             color: white;
@@ -21,9 +22,8 @@
             font-size: 22px;
             font-weight: 600;
         }
-
         .container {
-            width: 85%;
+            width: 80%;
             max-width: 700px;
             margin: 40px auto;
             background: white;
@@ -31,25 +31,18 @@
             border-radius: 12px;
             box-shadow: 0px 5px 20px rgba(0,0,0,0.2);
         }
-
         h1 {
             text-align: center;
         }
-
-        label {
-            font-weight: 500;
-        }
-
-        select, input, button {
+        input, select, button {
             width: 100%;
             padding: 12px;
-            margin-top: 8px;
+            margin-top: 10px;
             margin-bottom: 20px;
             border-radius: 8px;
             border: 1px solid #ccc;
             font-size: 15px;
         }
-
         button {
             background: #4e73df;
             color: white;
@@ -57,15 +50,12 @@
             font-weight: 600;
             cursor: pointer;
         }
-
         button:hover {
             background: #2e59d9;
         }
-
         .hidden {
             display: none;
         }
-
         .result {
             background: #f8f9fc;
             padding: 18px;
@@ -73,13 +63,9 @@
             margin-top: 20px;
             line-height: 1.6;
         }
-
-        .wish-box {
+        .center {
             text-align: center;
-            font-size: 18px;
-            line-height: 1.7;
         }
-
         footer {
             text-align: center;
             padding: 15px;
@@ -88,104 +74,244 @@
         }
     </style>
 </head>
-
 <body>
 
-<nav>
-    <i class="fa-solid fa-graduation-cap"></i> Career Guidance System
-</nav>
+    <nav>
+        <i class="fa-solid fa-graduation-cap"></i> Career Guidance System
+    </nav>
 
-<!-- PAGE 1 -->
-<div class="container" id="page1">
-    <h1>Find Your Career Path</h1>
+    <!-- PAGE 1: Registration -->
+    <div class="container" id="registerPage">
+        <h1>Student Registration</h1>
+        <input type="text" id="regName" placeholder="Enter Your Name">
+        <input type="email" placeholder="Enter Email">
+        <input type="password" placeholder="Create Password">
+        <button onclick="startSystem()">
+            <i class="fa-solid fa-user-plus"></i> Register
+        </button>
+    </div>
 
-    <label>Enter Your Name:</label>
-    <input type="text" id="name" placeholder="Enter your name">
+    <!-- PAGE 2: Career Goal -->
+    <div class="container hidden" id="goalPage">
+        <h1>Find Your Career Path</h1>
+        <label>Select Your Goal:</label>
+        <select id="goal">
+            <option value="">-- Select Goal --</option>
+            <option value="doctor">Doctor</option>
+            <option value="nurse">Nurse</option>
+            <option value="engineer">Engineer</option>
+            <option value="law">Law & Administration</option>
+            <option value="banking">Banking & Commerce</option>
+            <option value="teacher">Teacher / Lecturer</option>
+            <option value="defence">Defence Services</option>
+            <option value="software">Software Developer</option>
+            <option value="designer">Graphic Designer</option>
+            <option value="journalist">Journalist</option>
+            <option value="entrepreneur">Entrepreneur</option>
+            <option value="pharmacist">Pharmacist</option>
+            <option value="chartered">Chartered Accountant</option>
+        </select>
+        <button onclick="showCareer()">
+            <i class="fa-solid fa-lightbulb"></i> Get Career Details
+        </button>
+    </div>
 
-    <label>Select Your Goal:</label>
-    <select id="goal">
-        <option value="">-- Select Goal --</option>
-        <option value="doctor">Doctor</option>
-        <option value="engineer">Engineer</option>
-        <option value="law">Law & Administration</option>
-        <option value="banking">Banking & Commerce</option>
-        <option value="government">Government Jobs</option>
-        <option value="teacher">Teacher / Lecturer</option>
-        <option value="defence">Defence Services</option>
-        <option value="software">Software Developer</option>
-        <option value="data">Data Scientist</option>
-        <option value="designer">Graphic Designer</option>
-        <option value="journalist">Journalist</option>
-        <option value="entrepreneur">Entrepreneur</option>
-        <option value="pharmacist">Pharmacist</option>
-        <option value="nurse">Nurse</option>
-        <option value="chartered">Chartered Accountant</option>
-    </select>
+    <!-- PAGE 3: Career Details -->
+    <div class="container hidden" id="detailsPage">
+        <h1>Career Roadmap</h1>
+        <div class="result" id="output"></div>
+        <div class="center">
+            <button onclick="goWish()">Continue</button>
+        </div>
+    </div>
 
-    <button onclick="goToNextPage()">
-        <i class="fa-solid fa-lightbulb"></i> Get Career Details
-    </button>
-</div>
+    <!-- PAGE 4: Final Message -->
+    <div class="container hidden" id="wishPage">
+        <h1>🎉 Congratulations!</h1>
+        <p id="finalWish"></p>
+        <button onclick="restart()">Start Again</button>
+    </div>
 
-<!-- PAGE 2 -->
-<div class="container hidden" id="page2">
-    <h1>Career Details</h1>
-    <div class="result" id="output"></div>
+    <footer>
+        © 2026 Career Guidance System
+    </footer>
 
-    <div class="wish-box" id="wishMessage"></div>
+    <script>
+        var studentName = "";
 
-    <button onclick="goBack()">⬅ Back</button>
-</div>
+        function startSystem() {
+            studentName = document.getElementById("regName").value;
+            if (studentName === "") {
+                alert("Please enter your name");
+                return;
+            }
+            document.getElementById("registerPage").classList.add("hidden");
+            document.getElementById("goalPage").classList.remove("hidden");
+        }
 
-<footer>
-    © 2026 Career Guidance System | Designed Professionally
-</footer>
+        function showCareer() {
+            var goal = document.getElementById("goal").value;
+            if (goal === "") {
+                alert("Please select a goal");
+                return;
+            }
+            var careers = {
+                doctor: `
+                    <h3>Doctor</h3>
+                    <b>Step-by-Step Process:</b>
+                    <ol>
+                        <li>After 10th, choose Intermediate (BiPC).</li>
+                        <li>Complete 12th with BiPC.</li>
+                        <li>Prepare for NEET exam.</li>
+                        <li>Enroll in MBBS degree (5.5 years).</li>
+                        <li>After MBBS, optional specialization (MD/MS).</li>
+                    </ol>
+                `,
+                nurse: `
+                    <h3>Nurse</h3>
+                    <b>Step-by-Step Process:</b>
+                    <ol>
+                        <li>After 10th, choose Intermediate (BiPC).</li>
+                        <li>Complete 12th with BiPC.</li>
+                        <li>Enroll in B.Sc Nursing (4 years).</li>
+                        <li>After B.Sc Nursing, optional specialization (M.Sc Nursing).</li>
+                    </ol>
+                `,
+                engineer: `
+                    <h3>Engineer</h3>
+                    <b>Step-by-Step Process:</b>
+                    <ol>
+                        <li>After 10th, choose Intermediate (MPC).</li>
+                        <li>Complete 12th with MPC.</li>
+                        <li>Prepare for JEE or state engineering entrance exams.</li>
+                        <li>Enroll in B.Tech or B.E (4 years).</li>
+                        <li>After B.Tech, optional M.Tech or specialization.</li>
+                    </ol>
+                `,
+                law: `
+                    <h3>Law & Administration</h3>
+                    <b>Step-by-Step Process:</b>
+                    <ol>
+                        <li>After 10th, choose Intermediate (CEC or HEC).</li>
+                        <li>Complete 12th with any group (Arts/Commerce).</li>
+                        <li>Prepare for CLAT or law entrance exams.</li>
+                        <li>Enroll in BA LLB or LLB (integrated or 3-year).</li>
+                        <li>After LLB, optional specialization (Judiciary exams).</li>
+                    </ol>
+                `,
+                banking: `
+                    <h3>Banking & Commerce</h3>
+                    <b>Step-by-Step Process:</b>
+                    <ol>
+                        <li>After 10th, choose Intermediate (MEC or CEC).</li>
+                        <li>Complete 12th with Commerce/Economics.</li>
+                        <li>Enroll in B.Com or BBA (3 years).</li>
+                        <li>Prepare for banking exams (IBPS, SBI, etc.).</li>
+                        <li>Optional: Pursue CA or MBA for advanced careers.</li>
+                    </ol>
+                `,
+                teacher: `
+                    <h3>Teacher / Lecturer</h3>
+                    <b>Step-by-Step Process:</b>
+                    <ol>
+                        <li>After 10th, any Intermediate group works (Arts/Science/Commerce).</li>
+                        <li>Complete 12th with any stream.</li>
+                        <li>Enroll in a degree (BA, B.Sc, etc.).</li>
+                        <li>After degree, do B.Ed (2 years).</li>
+                        <li>Apply for teaching jobs or further postgraduate studies.</li>
+                    </ol>
+                `,
+                defence: `
+                    <h3>Defence Services</h3>
+                    <b>Step-by-Step Process:</b>
+                    <ol>
+                        <li>After 10th, choose Intermediate (MPC preferred).</li>
+                        <li>Complete 12th with MPC.</li>
+                        <li>Prepare for NDA (National Defence Academy exam).</li>
+                        <li>Join NDA, complete training, and become a commissioned officer.</li>
+                    </ol>
+                `,
+                software: `
+                    <h3>Software Developer</h3>
+                    <b>Step-by-Step Process:</b>
+                    <ol>
+                        <li>After 10th, choose Intermediate (MPC).</li>
+                        <li>Complete 12th with MPC.</li>
+                        <li>Enroll in B.Tech (Computer Science) or BCA.</li>
+                        <li>Learn programming languages (Python, Java, etc.).</li>
+                        <li>Apply for software development roles or further studies (M.Tech, etc.).</li>
+                    </ol>
+                `,
+                designer: `
+                    <h3>Graphic Designer</h3>
+                    <b>Step-by-Step Process:</b>
+                    <ol>
+                        <li>After 10th, any Intermediate group works.</li>
+                        <li>Complete 12th with any stream.</li>
+                        <li>Enroll in design courses (e.g., B.Des, graphic design diploma).</li>
+                        <li>Build a portfolio and apply for design jobs or freelancing.</li>
+                    </ol>
+                `,
+                journalist: `
+                    <h3>Journalist</h3>
+                    <b>Step-by-Step Process:</b>
+                    <ol>
+                        <li>After 10th, any Intermediate group works.</li>
+                        <li>Complete 12th with any stream.</li>
+                        <li>Enroll in BA Journalism or Mass Communication (3 years).</li>
+                        <li>Intern at media houses, and build a portfolio.</li>
+                    </ol>
+                `,
+                entrepreneur: `
+                    <h3>Entrepreneur</h3>
+                    <b>Step-by-Step Process:</b>
+                    <ol>
+                        <li>After 10th, any Intermediate group works.</li>
+                        <li>Complete 12th with any stream.</li>
+                        <li>Enroll in BBA or business-related degree.</li>
+                        <li>Learn business skills, start small ventures, and grow!</li>
+                    </ol>
+                `,
+                pharmacist: `
+                    <h3>Pharmacist</h3>
+                    <b>Step-by-Step Process:</b>
+                    <ol>
+                        <li>After 10th, choose Intermediate (BiPC).</li>
+                        <li>Complete 12th with BiPC.</li>
+                        <li>Enroll in B.Pharmacy (4 years).</li>
+                        <li>After B.Pharmacy, optional specialization (M.Pharmacy).</li>
+                    </ol>
+                `,
+                chartered: `
+                    <h3>Chartered Accountant</h3>
+                    <b>Step-by-Step Process:</b>
+                    <ol>
+                        <li>After 10th, choose Intermediate (MEC or CEC).</li>
+                        <li>Complete 12th with commerce/economics.</li>
+                        <li>Register for CA Foundation.</li>
+                        <li>Clear all levels of CA (Foundation, Inter, Final).</li>
+                        <li>Complete articleship, and become a Chartered Accountant.</li>
+                    </ol>
+                `
+            };
+            document.getElementById("output").innerHTML = careers[goal];
+            document.getElementById("goalPage").classList.add("hidden");
+            document.getElementById("detailsPage").classList.remove("hidden");
+        }
 
-<script>
-function goToNextPage() {
+        function goWish() {
+            document.getElementById("detailsPage").classList.add("hidden");
+            document.getElementById("wishPage").classList.remove("hidden");
+            document.getElementById("finalWish").innerHTML =
+                "Dear <b>" + studentName + "</b>,<br><br>" +
+                "Believe in yourself and work hard.<br>" +
+                "Your dream career is possible with dedication and consistency.<br><br>" +
+                "All the best for your bright future 🚀";
+        }
 
-    var name = document.getElementById("name").value;
-    var goal = document.getElementById("goal").value;
-
-    if(name === "" || goal === "") {
-        alert("Please enter your name and select a goal.");
-        return;
-    }
-
-    var careers = {
-        doctor: "Group: BiPC<br>Courses: MBBS, BDS<br>Steps:<br>1. Choose BiPC<br>2. Prepare for NEET<br>3. Join Medical College",
-        engineer: "Group: MPC<br>Courses: B.Tech, B.E<br>Steps:<br>1. Choose MPC<br>2. Prepare for JEE/EAMCET<br>3. Join Engineering College",
-        law: "Group: CEC/HEC<br>Courses: LLB, BA LLB<br>Steps:<br>1. Choose CEC<br>2. Prepare for CLAT<br>3. Join Law College",
-        banking: "Group: MEC/CEC<br>Courses: B.Com, CA<br>Steps:<br>1. Complete B.Com<br>2. Prepare for Bank Exams",
-        government: "Group: HEC<br>Courses: BA<br>Steps:<br>1. Complete Degree<br>2. Prepare for UPSC/Group Exams",
-        teacher: "Group: Any Stream<br>Courses: B.Ed<br>Steps:<br>1. Complete Degree<br>2. Do B.Ed<br>3. Apply Teaching Exams",
-        defence: "Group: MPC/Any<br>Courses: NDA, CDS<br>Steps:<br>1. Prepare NDA/CDS<br>2. Physical Training<br>3. Join Defence Academy",
-        software: "Group: MPC<br>Courses: B.Tech CSE, BCA<br>Steps:<br>1. Learn Programming<br>2. Build Projects<br>3. Apply IT Jobs",
-        data: "Group: MPC<br>Courses: Data Science<br>Steps:<br>1. Learn Python<br>2. Study Statistics<br>3. Build Projects",
-        designer: "Group: Any<br>Courses: B.Des, Animation<br>Steps:<br>1. Learn Design Tools<br>2. Build Portfolio",
-        journalist: "Group: Any<br>Courses: BA Journalism<br>Steps:<br>1. Improve Communication<br>2. Join Internship",
-        entrepreneur: "Group: Any<br>Courses: BBA, MBA<br>Steps:<br>1. Learn Business Skills<br>2. Start Your Startup",
-        pharmacist: "Group: BiPC<br>Courses: B.Pharmacy<br>Steps:<br>1. Choose BiPC<br>2. Join Pharmacy College",
-        nurse: "Group: BiPC<br>Courses: B.Sc Nursing<br>Steps:<br>1. Choose BiPC<br>2. Join Nursing College",
-        chartered: "Group: MEC<br>Courses: CA<br>Steps:<br>1. Register CA Foundation<br>2. Clear Exams<br>3. Complete Articleship"
-    };
-
-    document.getElementById("output").innerHTML = careers[goal];
-
-    document.getElementById("wishMessage").innerHTML =
-        "<br><br>🎉 <b>Best wishes " + name + "!</b><br>" +
-        "Stay focused, work hard, and never give up.<br>" +
-        "You can definitely achieve your dream career! 🚀";
-
-    document.getElementById("page1").classList.add("hidden");
-    document.getElementById("page2").classList.remove("hidden");
-}
-
-function goBack() {
-    document.getElementById("page2").classList.add("hidden");
-    document.getElementById("page1").classList.remove("hidden");
-}
-</script>
-
+        function restart() {
+            location.reload();
+        }
+    </script>
 </body>
 </html>
